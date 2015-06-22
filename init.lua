@@ -1,14 +1,17 @@
 minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 
+-- load from config
 local keyword = minetest.setting_get("interact_keyword") or "iaccept"
+local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
+
+
 
 minetest.register_on_chat_message(function(name, message)
 	if message == keyword and minetest.get_player_privs(name).nointeract then
-		local privs = minetest.get_player_privs(name) --remember to abjust the privs to the ones you want to grant
-			privs.interact = true
-			privs.fly = true
-			privs.fast = true
-			privs.shout = true
+		local privs = minetest.get_player_privs(name)
+			for priv, state in pairs(keyword_privs,privs) do
+				privs[priv] = state
+			end
 			privs.nointeract = nil
 		minetest.set_player_privs(name, privs)
 
@@ -39,7 +42,7 @@ minetest.register_chatcommand("getkeyword", {
 	func = function(name, param)
 		if minetest.get_player_privs(name).basic_privs or minetest.get_player_privs(name).moderator or minetest.get_player_privs(name).server then
 			minetest.chat_send_player(name,"Keyword is: " ..keyword)
-			return true, "got Keyword was  successfully"
+			return true, "Got Keyword was  successfully"
 		else
 			return false, "Your are not allowed to view the keyword this way. (Required privs: basic_privs, modarator or server.)"
 		end
