@@ -1,16 +1,14 @@
 minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 
 -- load from config
-local keyword = minetest.setting_get("interact_keyword") or "iaccept"
+mki_interact_keyword = minetest.setting_get("interact_keyword") or "iaccept"
 local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
 local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or nil
 
---global plug-- 
-mki_keyword_live = keyword_liveupdate
 
 
 minetest.register_on_chat_message(function(name, message)
-	if message == keyword and minetest.get_player_privs(name).nointeract then
+	if message == mki_interact_keyword and minetest.get_player_privs(name).nointeract then
 		local privs = minetest.get_player_privs(name)
 			for priv, state in pairs(keyword_privs,privs) do
 				privs[priv] = state
@@ -35,7 +33,7 @@ minetest.register_chatcommand("setkeyword", {
 		minetest.setting_save()
 		minetest.log("action", "[autogranter] Admin, " .. name .. " has set a new keyward "..param)
 		if keyword_liveupdate == true then
-			keyword = param
+			mki_interact_keyword = param
 			minetest.chat_send_player(name,"keyword has been set and will take effect immediately")
 		else
 			minetest.chat_send_player(name,"keyword has been set but will take effect after reboot")
@@ -49,7 +47,7 @@ minetest.register_chatcommand("getkeyword", {
 	privs = {},
 	func = function(name, param)
 		if minetest.get_player_privs(name).basic_privs or minetest.get_player_privs(name).moderator or minetest.get_player_privs(name).server then
-			minetest.chat_send_player(name,"Keyword is: " ..keyword)
+			minetest.chat_send_player(name,"Keyword is: " ..mki_interact_keyword)
 			return true, "Success"
 		else
 			return false, "Your are not allowed to view the keyword this way. (Required privs: basic_privs, modarator or server.)"
