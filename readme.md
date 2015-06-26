@@ -1,5 +1,6 @@
 Mod made by CWz aka ChaosWormz
-License GPLv2
+<br>
+License MIT
 
 The mod automaticly grants interactact to player who entered the specifiedkeyword in chat.
 
