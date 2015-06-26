@@ -3,7 +3,10 @@ minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 -- load from config
 local keyword = minetest.setting_get("interact_keyword") or "iaccept"
 local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
-local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or false
+local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or nil
+
+--global plug-- 
+mki_keyword_live = keyword_liveupdate
 
 
 minetest.register_on_chat_message(function(name, message)
