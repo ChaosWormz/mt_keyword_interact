@@ -4,6 +4,7 @@ minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 mki_interact_keyword = minetest.setting_get("interact_keyword") or "iaccept"
 local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
 local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or nil
+local teleport_msg = minetest.setting_get("mki_send_teleport_msg") or "You've been teleported back to spawn due to lacking interact."
 
 
 
@@ -34,6 +35,8 @@ minetest.register_on_chat_message(function(name, message)
 	end
 end)
 
+
+
 minetest.register_chatcommand("setkeyword", {
 	params = "<keyword>",
 	description = "set the keyword",
@@ -62,5 +65,22 @@ minetest.register_chatcommand("getkeyword", {
 		else
 			return false, "Your are not allowed to view the keyword this way. (Required privs: basic_privs, modarator or server.)"
 		end
+	end,
+})
+
+minetest.register_chatcommand("send_spawn", {
+	params = "",
+	description = "Sends all interactless players to spawn",
+	privs = {basic_privs = true},
+	func = function(name, player)
+
+		for _,player in ipairs(minetest.get_connected_players()) do
+			local target = player:get_player_name()
+			if minetest.setting_get_pos("static_spawnpoint") and not minetest.get_player_privs(target).interact then 
+				minetest.get_player_by_name(target):setpos(minetest.setting_get_pos("static_spawnpoint"))
+				minetest.chat_send_player(target,teleport_msg)
+			end
+		end
+		minetest.chat_send_player(name,"Teleporting all interactless back to spawn...")
 	end,
 })
