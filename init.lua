@@ -8,18 +8,28 @@ local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_chang
 
 
 minetest.register_on_chat_message(function(name, message)
-	if message == mki_interact_keyword and minetest.get_player_privs(name).nointeract then
-		local privs = minetest.get_player_privs(name)
-			for priv, state in pairs(keyword_privs,privs) do
-				privs[priv] = state
-			end
-			privs.nointeract = nil
-		minetest.set_player_privs(name, privs)
+	if message == mki_interact_keyword then
+		if minetest.get_player_privs(name).nointeract then
+			local privs = minetest.get_player_privs(name)
+				for priv, state in pairs(keyword_privs,privs) do
+					privs[priv] = state
+				end
+				privs.nointeract = nil
+			minetest.set_player_privs(name, privs)
 
-		minetest.chat_send_all("<Server> player, "..name.." Read the rules and has been granted interact!")
-		minetest.log("action", "[autogranter] Player, " .. name .. " Was granted interact for keyword")
-		if minetest.get_modpath("irc") then
-			irc:say(("* %s%s"):format("", "player, "..name.." Read the rules and has been granted interact!"))
+			minetest.chat_send_all("<Server> player, "..name.." Read the rules and has been granted interact!")
+			minetest.log("action", "[autogranter] Player, " .. name .. " Was granted interact for keyword")
+			if minetest.get_modpath("irc") then
+				irc:say(("* %s%s"):format("", "player, "..name.." Read the rules and has been granted interact!"))
+			end
+			if minetest.setting_get_pos("alt_spawnpoint") then minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
+		else
+			if minetest.get_player_privs(name).interact then
+				minetest.chat_send_player(name,"You already have interact! It is only necessary to say the keyword once.")
+				if minetest.setting_get_pos("alt_spawnpoint") then minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
+			else
+				minetest.chat_send_player(name,"You have been prevented from obtaining the interact privilege. Contact a server administrator if you believe this to be in error.")
+			end
 		end
 	end
 end)
