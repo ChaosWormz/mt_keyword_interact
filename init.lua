@@ -22,9 +22,11 @@ minetest.register_on_chat_message(function(name, message)
 			if minetest.get_modpath("irc") then
 				irc:say(("* %s%s"):format("", "player, "..name.." Read the rules and has been granted interact!"))
 			end
+			minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint"))
 		else
 			if minetest.get_player_privs(name).interact then
 				minetest.chat_send_player(name,"You already have interact! It is only necessary to say the keyword once.")
+				minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint"))
 			else
 				minetest.chat_send_player(name,"You have been prevented from obtaining the interact privilege. Contact a server administrator if you believe this to be in error.")
 			end
