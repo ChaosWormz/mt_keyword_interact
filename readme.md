@@ -2,7 +2,7 @@ Mod made by CWz aka ChaosWormz
 <br>
 License MIT
 
-The mod automaticly grants interactact to player who entered the specifiedkeyword in chat.
+<p>The mod automaticly grants interact to player who entered the specified keyword in chat.</p>
 
 The commands:
 <br>/setkeyword [new keyword]
