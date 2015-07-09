@@ -4,12 +4,11 @@ minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 mki_interact_keyword = minetest.setting_get("interact_keyword") or "iaccept"
 local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
 local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or nil
-local teleport_msg = minetest.setting_get("mki_send_teleport_msg") or "You've been teleported back to spawn due to lacking interact."
-
+local teleport_msg = minetest.setting_get("mki_send_teleport_msg") or "You've been teleported back to spawn due to lacking interact." 
 
 
 minetest.register_on_chat_message(function(name, message)
-	if message == mki_interact_keyword then
+	if string.gsub(message, " ", "") == mki_interact_keyword then
 		if minetest.get_player_privs(name).nointeract then
 			local privs = minetest.get_player_privs(name)
 				for priv, state in pairs(keyword_privs,privs) do
