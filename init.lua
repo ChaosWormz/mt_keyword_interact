@@ -1,10 +1,11 @@
 minetest.register_privilege("nointeract", "Can enter keyword to get interact")
 
--- load from config
+-- load from config 
 mki_interact_keyword = minetest.setting_get("interact_keyword") or "iaccept"
 local keyword_privs = minetest.string_to_privs(minetest.setting_get("keyword_interact_privs") or "interact,shout,fast")
 local keyword_liveupdate = minetest.setting_getbool("interact_keyword_live_changing") or nil
 local teleport_msg = minetest.setting_get("mki_send_teleport_msg") or "You've been teleported back to spawn due to lacking interact." 
+local mki_notice_enable = minetest.setting_getbool("keyword_notice_on") or true
 
 
 minetest.register_on_chat_message(function(name, message)
@@ -22,13 +23,22 @@ minetest.register_on_chat_message(function(name, message)
 			if minetest.get_modpath("irc") then
 				irc:say(("* %s%s"):format("", "player, "..name.." Read the rules and has been granted interact!"))
 			end
+
 			if minetest.setting_get_pos("alt_spawnpoint") then minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
 		else
 			if minetest.get_player_privs(name).interact then
 				minetest.chat_send_player(name,"You already have interact! It is only necessary to say the keyword once.")
+				
+				if minetest.get_modpath("notice") and mki_notice_enable == true then
+					notice.send(name, "You already have interact! It is only necessary to say the keyword once.")
+				end
+				
 				if minetest.setting_get_pos("alt_spawnpoint") then minetest.get_player_by_name(name):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
 			else
 				minetest.chat_send_player(name,"You have been prevented from obtaining the interact privilege. Contact a server administrator if you believe this to be in error.")
+				if minetest.get_modpath("notice") and mki_notice_enable == true then
+					notice.send(name, "You have been prevented from obtaining the interact privilege. Contact a server administrator if you believe this to be in error.")
+				end
 			end
 		end
 	end
@@ -78,6 +88,9 @@ minetest.register_chatcommand("send_spawn", {
 			if minetest.setting_get_pos("static_spawnpoint") and not minetest.get_player_privs(target).interact then 
 				minetest.get_player_by_name(target):setpos(minetest.setting_get_pos("static_spawnpoint"))
 				minetest.chat_send_player(target,teleport_msg)
+				if minetest.get_modpath("notice") and mki_notice_enable == true then
+					notice.send(target, teleport_msg)
+				end
 			end
 		end
 		minetest.chat_send_player(name,"Teleporting all interactless back to spawn...")
