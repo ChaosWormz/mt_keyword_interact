@@ -9,7 +9,7 @@ local mki_notice_enable = minetest.setting_getbool("keyword_notice_on") or true
 
 
 minetest.register_on_chat_message(function(name, message)
-	if string.gsub(message, " ", "") == mki_interact_keyword then
+	if string.gsub(message, " ", ""):lower() == mki_interact_keyword then
 		if minetest.get_player_privs(name).nointeract then
 			local privs = minetest.get_player_privs(name)
 				for priv, state in pairs(keyword_privs,privs) do
