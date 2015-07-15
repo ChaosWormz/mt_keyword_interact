@@ -13,6 +13,9 @@ The commands:
 <p>/send_spawn
 <br>Description: Used to send all player who do not have interact back to spawn.
 <br>Required privs: basic_privs </p>
+<p>/yesinteract
+<br>Description: manually grant a player interact and do what the keyword does.
+<br>Required privs: basic_privs </p>
 
 A keyword can be manually set by adding interact_keyword = keyword to minetest.conf
 <h4>For the keyword to work the "nointeract" priv must be granted by default</h4>

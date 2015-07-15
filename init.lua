@@ -96,3 +96,35 @@ minetest.register_chatcommand("send_spawn", {
 		minetest.chat_send_player(name,"Teleporting all interactless back to spawn...")
 	end,
 })
+
+minetest.register_chatcommand("yesinteract", {
+	params = "<playername>",
+	description = "Manually does what the keyword does",
+	privs = {basic_privs = true},
+	func = function(name, player)
+		if not minetest.get_player_privs(player).interact and minetest.auth_table[player] then
+			local privs = minetest.get_player_privs(player)
+				for priv, state in pairs(keyword_privs,privs) do
+					privs[priv] = state
+				end
+				privs.nointeract = nil
+			minetest.set_player_privs(player, privs)
+
+			minetest.chat_send_all("<Server> player, "..player.." Read the rules and has been granted interact!")
+			minetest.log("action", "[autogranter] Player, " .. player .. " Was granted interact by "..name)
+			if minetest.get_modpath("irc") then
+				irc:say(("* %s%s"):format("", "player, "..player.." Read the rules and has been granted interact(Manuelly)!"))
+			end
+
+			if minetest.setting_get_pos("alt_spawnpoint") and minetest.get_player_by_name(player) then minetest.get_player_by_name(player):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
+		else
+			if minetest.get_player_privs(player).interact then
+				minetest.chat_send_player(name,"This player("..player..") already has interact.")
+			end
+			
+			if not minetest.auth_table[player] then
+				minetest.chat_send_player(name,"This player("..player..") does not exist.")
+			end
+		end
+	end,
+})
