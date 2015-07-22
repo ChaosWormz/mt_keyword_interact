@@ -41,6 +41,7 @@ minetest.register_on_chat_message(function(name, message)
 				end
 			end
 		end
+		return true
 	end
 end)
 
