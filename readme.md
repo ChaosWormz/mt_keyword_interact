@@ -19,3 +19,9 @@ The commands:
 
 A keyword can be manually set by adding interact_keyword = keyword to minetest.conf
 <h4>For the keyword to work the "nointeract" priv must be granted by default</h4>
+
+CREDITS:
+
+ChaosWormz
+cheapie
+

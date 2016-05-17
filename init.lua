@@ -18,8 +18,8 @@ minetest.register_on_chat_message(function(name, message)
 				privs.nointeract = nil
 			minetest.set_player_privs(name, privs)
 
-			minetest.chat_send_all("<Server> player, "..name.." Read the rules and has been granted interact!")
-			minetest.log("action", "[autogranter] Player, " .. name .. " Was granted interact for keyword")
+			minetest.chat_send_all("Notice: player, "..name.." Read the rules and has been granted interact!")
+			minetest.log("action", "[auto_granter] Player, " .. name .. " Was granted interact for keyword")
 			if minetest.get_modpath("irc") then
 				irc:say(("* %s%s"):format("", "player, "..name.." Read the rules and has been granted interact!"))
 			end
@@ -54,7 +54,7 @@ minetest.register_chatcommand("setkeyword", {
 	func = function(name, param)
 		minetest.setting_set("interact_keyword", param)
 		minetest.setting_save()
-		minetest.log("action", "[autogranter] Admin, " .. name .. " has set a new keyward "..param)
+		minetest.log("action", "[auto_granter] Admin, " .. name .. " has set a new keyward "..param)
 		if keyword_liveupdate == true then
 			mki_interact_keyword = param
 			minetest.chat_send_player(name,"keyword has been set and will take effect immediately")
@@ -69,11 +69,11 @@ minetest.register_chatcommand("getkeyword", {
 	description = "get the keyword",
 	privs = {},
 	func = function(name, param)
-		if minetest.get_player_privs(name).basic_privs or minetest.get_player_privs(name).moderator or minetest.get_player_privs(name).server then
+		if minetest.get_player_privs(name).basic_privs or minetest.get_player_privs(name).server then
 			minetest.chat_send_player(name,"Keyword is: " ..mki_interact_keyword)
 			return true, "Success"
 		else
-			return false, "Your are not allowed to view the keyword this way. (Required privs: basic_privs, modarator or server.)"
+			return false, "Your are not allowed to view the keyword this way. (Required privs: basic_privs or server.)"
 		end
 	end,
 })
@@ -111,10 +111,10 @@ minetest.register_chatcommand("yesinteract", {
 				privs.nointeract = nil
 			minetest.set_player_privs(player, privs)
 
-			minetest.chat_send_all("<Server> player, "..player.." Read the rules and has been granted interact!")
-			minetest.log("action", "[autogranter] Player, " .. player .. " Was granted interact by "..name)
+			minetest.chat_send_all("Notice: player, "..player.." Read the rules and has been granted interact!")
+			minetest.log("action", "[auto_granter] Player, " .. player .. " Was granted interact by "..name)
 			if minetest.get_modpath("irc") then
-				irc:say(("* %s%s"):format("", "player, "..player.." Read the rules and has been granted interact(Manuelly)!"))
+				irc:say(("* %s%s"):format("", "player, "..player.." Read the rules and has been granted interact(Manually)!"))
 			end
 
 			if minetest.setting_get_pos("alt_spawnpoint") and minetest.get_player_by_name(player) then minetest.get_player_by_name(player):setpos(minetest.setting_get_pos("alt_spawnpoint")) end
