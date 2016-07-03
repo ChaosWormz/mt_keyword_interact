@@ -42,9 +42,27 @@ minetest.register_on_chat_message(function(name, message)
 			end
 		end
 		return true
+	else
+		if not message then return end
+			local msg = message:lower()
+			if msg:find(mki_interact_keyword) then
+				message = "Please read the rules on the signs"
+				minetest.chat_send_player(name,"DO NOT tell other players the keyword. If they need help, direct them to the signs.")
+				return message
+			end
 	end
 end)
 
+
+-- block keyword
+minetest.register_on_chat_message(function(name, message)
+local msg = message:lower()
+	if msg:find(mki_interact_keyword) and not minetest.get_player_privs(name).nointeract then
+		minetest.chat_send_player(name, "Do not tell people the keyword!")
+		message = "--Message removed."
+		return message
+	end
+end)
 
 
 minetest.register_chatcommand("setkeyword", {
